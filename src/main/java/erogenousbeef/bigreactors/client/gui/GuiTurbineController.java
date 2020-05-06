@@ -178,7 +178,7 @@ public class GuiTurbineController extends BeefGuiBase {
 		}
 		
 		speedString.setLabelText(String.format("%.1f RPM", turbine.getRotorSpeed()));
-		energyGeneratedString.setLabelText(String.format("%.0f RF/t", turbine.getEnergyGeneratedLastTick()));
+		energyGeneratedString.setLabelText(String.format("%.0f EU/t", turbine.getEnergyGeneratedLastTick()));
 		governorString.setLabelText(String.format("%d mB/t", turbine.getMaxIntakeRate()));
 		
 		if(turbine.getActive()) {

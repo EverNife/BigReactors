@@ -111,7 +111,7 @@ public class MultiblockReactor extends RectangularMultiblockControllerBase imple
 	private Set<EntityPlayer> updatePlayers;
 	private int ticksSinceLastUpdate;
 	private static final int ticksBetweenUpdates = 3;
-	private static final int maxEnergyStored = 10000000;
+	private static final int maxEnergyStored = 100000;
 	
 	public MultiblockReactor(World world) {
 		super(world);

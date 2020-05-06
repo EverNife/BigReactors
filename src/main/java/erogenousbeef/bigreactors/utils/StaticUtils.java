@@ -241,7 +241,7 @@ public class StaticUtils {
 	}
 	
 	public static class Strings {
-		public static String[] sizePrefixes = {"", "Ki", "Me", "Gi", "Te", "Pe", "Ex", "Ze", "Yo", "Ho"};
+		public static String[] sizePrefixes = {"", "k", "M", "G", "T", "P", "E", "Z", "Y", "H"};
 		// Ho = Hojillion
 		
 		public static String formatRF(float number) {
@@ -251,7 +251,7 @@ public class StaticUtils {
 				number *= -1;
 			}
 			
-			if(number <= 0.00001f) { return "0.00 RF"; }
+			if(number <= 0.00001f) { return "0.00 EU"; }
 			
 			int power = (int)Math.floor(Math.log10(number));
 
@@ -260,10 +260,10 @@ public class StaticUtils {
 			double divisor = Math.pow(1000f, letterIdx);
 			
 			if(divisor > 0) {
-				return String.format("%s%." + Integer.toString(decimalPoints) + "f %sRF", prefix, number/divisor, sizePrefixes[letterIdx]);
+				return String.format("%s%." + Integer.toString(decimalPoints) + "f %sEU", prefix, number/divisor, sizePrefixes[letterIdx]);
 			}
 			else {
-				return String.format("%s%." + Integer.toString(decimalPoints) + "f RF", prefix, number);
+				return String.format("%s%." + Integer.toString(decimalPoints) + "f EU", prefix, number);
 			}
 		}
 		

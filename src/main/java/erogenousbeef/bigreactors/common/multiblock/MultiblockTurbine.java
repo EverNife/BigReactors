@@ -73,7 +73,7 @@ public class MultiblockTurbine extends RectangularMultiblockControllerBase imple
 
 	private FluidTank[] tanks;
 	
-	static final float maxEnergyStored = 1000000f; // 1 MegaRF
+	static final float maxEnergyStored = 100000f; // 100 GigaEU
 	
 	// Persistent game data
 	float energyStored;
