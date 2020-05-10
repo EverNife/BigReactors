@@ -1,31 +1,34 @@
 package erogenousbeef.bigreactors.common.multiblock.tileentity;
 
-import net.minecraft.block.Block;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
+import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
+import erogenousbeef.bigreactors.common.BigReactors;
 import erogenousbeef.bigreactors.common.multiblock.interfaces.INeighborUpdatableEntity;
 import erogenousbeef.core.multiblock.MultiblockControllerBase;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergySource;
-import ic2.api.tile.IEnergyStorage;
+import net.minecraft.block.Block;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityTurbinePowerTap extends TileEntityTurbinePartStandard implements IEnergyStorage, IEnergySource, INeighborUpdatableEntity {
-
-	IEnergyAcceptor	euNetwork;
+public class TileEntityTurbinePowerTap extends TileEntityTurbinePartStandard implements IEnergyProvider, IEnergyConnection, IEnergySource, INeighborUpdatableEntity {
+	public IEnergyAcceptor	euNetwork;
+	public IEnergyReceiver rfNetwork;
+	
+	boolean addedEnergyNet = false;
 	
 	public TileEntityTurbinePowerTap() {
 		super();
 		euNetwork = null;
+		rfNetwork = null;
 	}
-
-	// INeighborUpdatableEntity
+	
 	@Override
 	public void onNeighborBlockChange(World world, int x, int y, int z, Block neighborBlock) {
 		if(isConnected()) {
@@ -40,30 +43,29 @@ public class TileEntityTurbinePowerTap extends TileEntityTurbinePartStandard imp
 		}
 	}
 
-	public boolean isAttachedToPowerNetwork() {
-		return euNetwork != null;
-	}
-	
 	// IMultiblockPart
 	@Override
 	public void onAttached(MultiblockControllerBase newController) {
 		super.onAttached(newController);
-		
+
 		checkForConnections(this.worldObj, xCoord, yCoord, zCoord);
-		
-		this.notifyNeighborsOfTileChange();
+	}
+	
+	public boolean isAttachedToPowerNetwork() {
+		return (rfNetwork != null || euNetwork != null);
 	}
 	
 	@Override
 	public void onMachineAssembled(MultiblockControllerBase multiblockControllerBase) {
 		super.onMachineAssembled(multiblockControllerBase);
 
-		
 		checkForConnections(this.worldObj, xCoord, yCoord, zCoord);
 		
+		// Force a connection to the power taps
 		this.notifyNeighborsOfTileChange();
 	}
-	
+
+	// Custom PowerTap methods
 	/**
 	 * Check for a world connection, if we're assembled.
 	 * @param world
@@ -72,32 +74,36 @@ public class TileEntityTurbinePowerTap extends TileEntityTurbinePartStandard imp
 	 * @param z
 	 */
 	protected void checkForConnections(IBlockAccess world, int x, int y, int z) {
-		boolean wasConnected = (euNetwork != null);
-		ForgeDirection out = getOutwardsDir();
-		if(out == ForgeDirection.UNKNOWN) {
-			wasConnected = false;
-			euNetwork = null;
-		}
-		else {
-			// See if our adjacent non-reactor coordinate has a TE
-			euNetwork = null;
-
-			TileEntity te = world.getTileEntity(x + out.offsetX, y + out.offsetY, z + out.offsetZ);
-			if(!(te instanceof TileEntityReactorPowerTap)) {
-				// Skip power taps, as they implement these APIs and we don't want to shit energy back and forth
-				if(te instanceof IEnergyAcceptor) {
-					IEnergyAcceptor handler = (IEnergyAcceptor)te;
-					if(handler.acceptsEnergyFrom(this, out.getOpposite())) {
-						euNetwork = handler;
+			boolean wasConnected = (euNetwork != null || rfNetwork != null);
+			ForgeDirection out = getOutwardsDir();
+			if(out == ForgeDirection.UNKNOWN) {
+				wasConnected = false;
+				euNetwork = null;
+				rfNetwork = null;
+			}
+			else {
+				// See if our adjacent non-reactor coordinate has a TE
+				euNetwork = null;
+				rfNetwork = null;
+				TileEntity te = world.getTileEntity(x + out.offsetX, y + out.offsetY, z + out.offsetZ);
+				if(!(te instanceof TileEntityTurbinePowerTap)) {
+					// Skip power taps, as they implement these APIs and we don't want to shit energy back and forth
+					//EU
+					if(te instanceof IEnergyAcceptor) {
+						IEnergyAcceptor handler = (IEnergyAcceptor)te;
+						if(handler.acceptsEnergyFrom(this, out.getOpposite())) {
+							euNetwork = handler;
+						}
+					}
+					//RF
+					if(te instanceof IEnergyReceiver) {
+						rfNetwork = (IEnergyReceiver)te;	
 					}
 				}
 			}
-		}
-		
-		boolean isConnected = (euNetwork != null);
-		if(wasConnected != isConnected && worldObj.isRemote) {
-			// Re-render on clients
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		boolean isConnected = (euNetwork != null || rfNetwork != null);
+		if(wasConnected != isConnected) {
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		}
 	}
 
@@ -105,16 +111,29 @@ public class TileEntityTurbinePowerTap extends TileEntityTurbinePartStandard imp
 	 * @return Power units remaining after consumption.
 	 */
 	public int onProvidePower(int units) {
-		if(euNetwork == null) {
+		//EU
+		if(euNetwork == null && addedEnergyNet) {
 			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
-		}else {
-			ForgeDirection approachDirection = getOutwardsDir().getOpposite();
+			addedEnergyNet = false;
+		}else if(!addedEnergyNet){
 			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
+			addedEnergyNet = true;
 		}
+		//RF
+		
+		if(rfNetwork == null) {
+			return units;
+		}
+		
+		ForgeDirection approachDirection = getOutwardsDir().getOpposite();
+		rfNetwork.receiveEnergy(approachDirection, (int)units / this.getTurbine().getAttachedPowerTapsCount(), false);
+		
 		return units;
 	}
 
-	public boolean hasEnergyConnection() { return euNetwork != null; }
+	public boolean hasEnergyConnection() {
+		return (euNetwork != null || rfNetwork != null); 
+	}
 
 	@Override
 	public boolean emitsEnergyTo(TileEntity receiver, ForgeDirection direction) {
@@ -134,7 +153,7 @@ public class TileEntityTurbinePowerTap extends TileEntityTurbinePartStandard imp
 	public double getOfferedEnergy() {
 		if(!this.isConnected())
 			return 0;
-		return this.getOutput();
+		return (this.getTurbine().getEnergyGeneratedLastTick() * BigReactors.RFtoEU) / this.getTurbine().getAttachedPowerTapsCount();
 	}
 
 	@Override
@@ -145,42 +164,33 @@ public class TileEntityTurbinePowerTap extends TileEntityTurbinePartStandard imp
 		return 4;
 	}
 
+	// IEnergyConnection
 	@Override
-	public int getStored() {
-		ForgeDirection from = getOutwardsDir().getOpposite();
-		return this.getTurbine().getEnergyStored(from);
+	public boolean canConnectEnergy(ForgeDirection from) {
+		if(!this.isConnected()) { return false; }
+		return from == getOutwardsDir();
 	}
 
 	@Override
-	public void setStored(int energy) {}
-
-	@Override
-	public int addEnergy(int amount) {
-		return 0;
-	}
-
-	@Override
-	public int getCapacity() {
-		return 0;
-	}
-
-	@Override
-	public int getOutput() {
+	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
 		if(!this.isConnected())
 			return 0;
-		ForgeDirection direction = getOutwardsDir().getOpposite();
-		return this.getTurbine().extractEnergy(direction, (int)this.getOutputEnergyUnitsPerTick(), false);
+	
+		if(from == getOutwardsDir()) {
+			return (int) this.getTurbine().getEnergyGeneratedLastTick();
+		}
+	
+		return 0;
 	}
 
 	@Override
-	public double getOutputEnergyUnitsPerTick() {
-		if(this.getTurbine().getEnergyStored() >= 500)
-			return this.getTurbine().getEnergyGeneratedLastTick() + 500;
-		else
-			return this.getTurbine().getEnergyGeneratedLastTick() + this.getTurbine().getEnergyStored();
+	public int getEnergyStored(ForgeDirection arg0) {
+		return 0;
 	}
 
 	@Override
-	public boolean isTeleporterCompatible(ForgeDirection side) {
-		return false;
-	}}
+	public int getMaxEnergyStored(ForgeDirection arg0) {
+		return 0;
+	}
+	
+}

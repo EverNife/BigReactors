@@ -9,6 +9,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -133,7 +134,7 @@ public class StaticUtils {
 				if(worldObj.getBlock(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ) == Blocks.chest) {
 					TileEntity otherTe = worldObj.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
 					if(otherTe instanceof IInventory) {
-						return new InventoryLargeChest("Large Chest", te, (IInventory)otherTe);
+						return new InventoryLargeChest(te.getInventoryName(), te, (IInventory)otherTe);
 					}
 				}
 			}
@@ -245,6 +246,29 @@ public class StaticUtils {
 		// Ho = Hojillion
 		
 		public static String formatRF(float number) {
+			String prefix = "";
+			if(number < 0f) {
+				prefix = "-";
+				number *= -1;
+			}
+			
+			if(number <= 0.00001f) { return "0.00 RF"; }
+			
+			int power = (int)Math.floor(Math.log10(number));
+
+			int decimalPoints = 2 - (power % 3);
+			int letterIdx = Math.max(0, Math.min(sizePrefixes.length, power / 3));
+			double divisor = Math.pow(1000f, letterIdx);
+			
+			if(divisor > 0) {
+				return String.format("%s%." + Integer.toString(decimalPoints) + "f %sRF", prefix, number/divisor, sizePrefixes[letterIdx]);
+			}
+			else {
+				return String.format("%s%." + Integer.toString(decimalPoints) + "f RF", prefix, number);
+			}
+		}
+		
+		public static String formatEU(float number) {
 			String prefix = "";
 			if(number < 0f) {
 				prefix = "-";

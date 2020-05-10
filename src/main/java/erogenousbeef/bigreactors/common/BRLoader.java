@@ -48,7 +48,6 @@ public class BRLoader {
 		BigReactors.registerFuelRods(0, true);
 		BigReactors.registerReactorPartBlocks(0, true);
 		BigReactors.registerTurbineParts();
-		BigReactors.registerDevices(0,  true);
 		BigReactors.registerFluids(0,  true);
 		BigReactors.registerCreativeParts(0, true);
 		BigReactors.registerItems();

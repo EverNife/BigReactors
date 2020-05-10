@@ -9,7 +9,7 @@ public class BeefGuiPowerBar extends BeefGuiTextureProgressBar implements
 		IBeefTooltipControl {
 
 	IEnergyProvider _entity;
-	
+	//TODO: REMOVE IT TRASH
 	public BeefGuiPowerBar(BeefGuiBase container, int x, int y, IEnergyProvider entity) {
 		super(container, x, y);
 		_entity = entity;

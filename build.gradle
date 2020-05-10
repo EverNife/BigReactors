@@ -43,11 +43,11 @@ repositories {
 }
 
 dependencies {
-    compile 'com.mod-buildcraft:buildcraft:6.0.18:dev'
+    compile 'com.mod-buildcraft:buildcraft:7.1.23:dev'
     compile 'li.cil.oc:OpenComputers:MC1.7.10-1.5.+:api'
     compile group: 'cofh', name: 'CoFHCore', version: '[1.7.10]3.1.4-329-dev', ext: 'jar'
     compile 'net.industrial-craft:industrialcraft-2:2.2.827-experimental:api'
-
+    compile 'net.industrial-craft:industrialcraft-2:2.2.827-experimental:dev'
 }
 
 processResources
