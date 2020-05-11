@@ -155,7 +155,7 @@ public class TileEntityReactorPowerTap extends TileEntityReactorPart implements 
 	public double getOfferedEnergy() {
 		if(!this.isConnected())
 			return 0;
-		return (this.getReactorController().getEnergyGeneratedLastTick() / BigReactors.RFtoEU) / this.getReactorController().getAttachedPowerTapsCount();
+		return (this.getReactorController().getEnergyGeneratedLastTick() * BigReactors.RFtoEU) / this.getReactorController().getAttachedPowerTapsCount();
 	}
 
 	@Override
