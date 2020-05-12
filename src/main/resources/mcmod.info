@@ -2,13 +2,13 @@
 {
   "modid": "BigReactors",
   "name": "Big Reactors",
-  "description": "Adds large, multiblock power generation machines to Minecraft. Compatible with EU power.",
+  "description": "Adds large, multiblock power generation machines to Minecraft. Compatible with EU/RF power.",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "http://www.big-reactors.com",
   "updateUrl": "",
   "authorList": ["dannikinfo"],
-  "credits": "ErogenousBeef, powercrystals, skyboy, King_Lemming, & Calclavia for example code",
+  "credits": "ErogenousBeef as original author, powercrystals, skyboy, King_Lemming, & Calclavia for example code",
   "logoFile": "",
   "screenshots": [],
   "dependencies": [

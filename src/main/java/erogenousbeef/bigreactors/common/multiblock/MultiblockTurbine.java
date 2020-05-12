@@ -1051,7 +1051,10 @@ public class MultiblockTurbine extends RectangularMultiblockControllerBase imple
 	
 	public float getRotorSpeed() {
 		if(attachedRotorBlades.size() <= 0 || rotorMass <= 0) { return 0f; }
-		return rotorEnergy / (attachedRotorBlades.size() * rotorMass);
+		float speed = rotorEnergy / (attachedRotorBlades.size() * rotorMass);
+		if(speed > getMaxRotorSpeed())
+			speed = getMaxRotorSpeed();
+		return speed;
 	}
 
 	public float getEnergyGeneratedLastTick() { return energyGeneratedLastTick; }
