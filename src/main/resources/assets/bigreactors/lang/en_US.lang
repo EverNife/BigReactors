@@ -421,3 +421,18 @@ Total:=Total:
 
 Control Rod=Control Rod
 Insertion:=Insertion:
+
+
+#--- BeefCore Throws
+
+Machine is too small.=Machine is too small.
+Machine is too large, it may be at most %d blocks in the X dimension=Machine is too large, it may be at most %d blocks in the X dimension
+Machine is too large, it may be at most %d blocks in the Y dimension=Machine is too large, it may be at most %d blocks in the Y dimension
+Machine is too large, it may be at most %d blocks in the Z dimension=Machine is too large, it may be at most %d blocks in the Z dimension
+Machine is too small, it must be at least %d blocks in the X dimension=Machine is too small, it must be at least %d blocks in the X dimension
+Machine is too small, it must be at least %d blocks in the Y dimension=Machine is too small, it must be at least %d blocks in the Y dimension
+Machine is too small, it must be at least %d blocks in the Z dimension=Machine is too small, it must be at least %d blocks in the Z dimension
+Part @ %d, %d, %d is incompatible with machines of type %s=Part @ %d, %d, %d is incompatible with machines of type %s
+The controller with the lowest minimum-coord value must consume the one with the higher coords=The controller with the lowest minimum-coord value must consume the one with the higher coords
+%d, %d, %d - Block is not valid for use in the machine's interior=%d, %d, %d - Block is not valid for use in the machine's interior
+Adding a dirty controller to a world that has no registered controllers!=Adding a dirty controller to a world that has no registered controllers!

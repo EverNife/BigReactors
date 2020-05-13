@@ -359,3 +359,17 @@ Total:=Всего:
 
 Control Rod=Управляющий стержень
 Insertion:=Погружение:
+
+#--- BeefCore Throws
+
+Machine is too small.=Машина слишком маленькая.
+Machine is too large, it may be at most %d blocks in the X dimension=Машина слишком большая, допустимо не больше %d блоков по X
+Machine is too large, it may be at most %d blocks in the Y dimension=Машина слишком большая, допустимо не больше %d блоков по Y
+Machine is too large, it may be at most %d blocks in the Z dimension=Машина слишком большая, допустимо не больше %d блоков по Z
+Machine is too small, it must be at least %d blocks in the X dimension=Машина слишком маленькая, необходимо не меньше %d блоков по X
+Machine is too small, it must be at least %d blocks in the Y dimension=Машина слишком маленькая, необходимо не меньше %d блоков по Y
+Machine is too small, it must be at least %d blocks in the Z dimension=Машина слишком маленькая, необходимо не меньше %d блоков по Z
+Part @ %d, %d, %d is incompatible with machines of type %s=@ %d, %d, %d Несовместимо с машинами типа: %s
+The controller with the lowest minimum-coord value must consume the one with the higher coords=Контроллер с самым низким значением минимальных координат должен использовать контроллер с более высокими координатами #Необходимо проверить эту строку!
+%d, %d, %d - Block is not valid for use in the machine's interior=%d, %d, %d -  Блок нельзя использовать внутри машины
+Adding a dirty controller to a world that has no registered controllers!=Добавление грязного контроллера в мир, в котором нет зарегистрированных контроллеров! #Необходимо и эту строку проверить, не понимаю смысла выражения без контекста.
