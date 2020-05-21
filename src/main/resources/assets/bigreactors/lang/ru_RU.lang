@@ -65,14 +65,16 @@ tile.fluid.blutonium.still.name=Жидкий блутоний
 
 # GUI
 
+Inventory=Инвентарь
+
 #--- AccessPort GUI
 
 Eject_Fuel=Извлечь топливо
 Ejects_fuel_contained_in_the=Извлекает топливо из
 reactor_placing_ingots_in_the=реактора, помещает слитки в 
 reactors_access_ports=реакторный порт доступа
-SHIFT_Dump_excess_fuel=SHIFT: Извлечь всё топливо
-SHIFT_Dump_excess_waste=SHIFT: Извлечь всё отработанное топливо
+SHIFT_Dump_excess_fuel=SHIFT: Извлечь и уничтожить всё топливо
+SHIFT_Dump_excess_waste=SHIFT: Извлечь и уничтожить всё отработанное топливо
 Eject_Waste=Извлечь отработанное топливо
 Ejects_waste_contained_in_the=Извлекает отработанное топливо из
 Inlet_Mode=Принимающий режим

@@ -9,10 +9,10 @@
   "updateUrl": "",
   "authorList": ["dannikinfo"],
   "credits": "ErogenousBeef as original author, powercrystals, skyboy, King_Lemming, & Calclavia for example code",
-  "logoFile": "",
+  "logoFile": "assets/bigreactors/logo.png",
   "screenshots": [],
   "dependencies": [
-	"MinecraftForge", "CoFHCore, "IC2"
+	"MinecraftForge", "CoFHCore", "IC2"
   ]
 }
 ]

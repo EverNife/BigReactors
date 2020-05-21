@@ -42,7 +42,7 @@ public class GuiReactorAccessPort extends BeefGuiBase {
 		btnInlet = new GuiIconButton(0, guiLeft + xSize - 47, guiTop + 53, 18, 18, ClientProxy.GuiIcons.getIcon("inletOn"), new String[] { EnumChatFormatting.AQUA + StatCollector.translateToLocal("Inlet_Mode"), "", StatCollector.translateToLocal("Sets_the_access_port_to"), StatCollector.translateToLocal("inlet_mode"), "", StatCollector.translateToLocal("Port_WILL_accept"), StatCollector.translateToLocal("items_from_pipes/ducts"), StatCollector.translateToLocal("Port_WILL_NOT_eject"), StatCollector.translateToLocal("items_to_pipes/ducts")});
 		btnOutlet = new GuiIconButton(1, guiLeft + xSize - 27, guiTop + 53, 18, 18, ClientProxy.GuiIcons.getIcon("outletOn"), new String[] { EnumChatFormatting.AQUA + StatCollector.translateToLocal("Outlet_Mode"), "", StatCollector.translateToLocal("Sets_the_access_port_to"), StatCollector.translateToLocal("outlet_mode"), "", StatCollector.translateToLocal("Port_WILL_NOT_accept"), StatCollector.translateToLocal("items_from_pipes/ducts"), StatCollector.translateToLocal("Port_WILL_eject"), StatCollector.translateToLocal("ingots_to_pipes/ducts")});
 		
-		inventoryLabel = new BeefGuiLabel(this, "Inventory", guiLeft + 8, guiTop + 64);
+		inventoryLabel = new BeefGuiLabel(this, StatCollector.translateToLocal("Inventory"), guiLeft + 8, guiTop + 64);
 		
 		registerControl(ejectFuel);
 		registerControl(ejectWaste);
