@@ -1,19 +1,18 @@
 package erogenousbeef.bigreactors.common.multiblock.tileentity;
 
-import buildcraft.api.transport.IPipeConnection;
-import buildcraft.api.transport.IPipeTile.PipeType;
 import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import erogenousbeef.bigreactors.common.BigReactors;
-import erogenousbeef.bigreactors.common.multiblock.MultiblockReactor;
 import erogenousbeef.bigreactors.common.multiblock.interfaces.INeighborUpdatableEntity;
 import erogenousbeef.core.multiblock.MultiblockControllerBase;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergySource;
+import ic2.core.IC2;
 import net.minecraft.block.Block;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -21,7 +20,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntityReactorPowerTap extends TileEntityReactorPart implements IEnergyProvider, IEnergyConnection, IEnergySource, INeighborUpdatableEntity {
-	public IEnergyAcceptor	euNetwork;
+	public IEnergyAcceptor euNetwork;
 	public IEnergyReceiver rfNetwork;
 	
 	boolean addedEnergyNet = false;
@@ -63,7 +62,7 @@ public class TileEntityReactorPowerTap extends TileEntityReactorPart implements 
 		// Force a connection to the power taps
 		this.notifyNeighborsOfTileChange();
 	}
-
+		
 	// Custom PowerTap methods
 	/**
 	 * Check for a world connection, if we're assembled.
@@ -109,17 +108,39 @@ public class TileEntityReactorPowerTap extends TileEntityReactorPart implements 
 		getReactorController().updateClient();
 	}
 
+	@Override
+	public void onChunkUnload() { //When chunk unload Tile remove from energy net.
+		if (!worldObj.isRemote){
+			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
+			addedEnergyNet = false;
+		}
+	}
+	
+	@Override
+	public void markDirty() { //I think this is not necessary, but just leave it here.
+		super.markDirty();
+		if (worldObj != null && !worldObj.isRemote) {
+			if (addedEnergyNet) {
+				EnergyTileUnloadEvent event = new EnergyTileUnloadEvent(this);
+				MinecraftForge.EVENT_BUS.post(event);
+			}
+			addedEnergyNet = false;
+			EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
+			MinecraftForge.EVENT_BUS.post(event);
+			addedEnergyNet = true;
+		}
+	}
+	
 	/** This will be called by the Reactor Controller when this tap should be providing power.
 	 * @return Power units remaining after consumption.
 	 */
 	public int onProvidePower(int units) {
 		//EU
-		if(euNetwork == null && addedEnergyNet) {
-			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
-			addedEnergyNet = false;
-		}else if(!addedEnergyNet){
-			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
-			addedEnergyNet = true;
+		if (!worldObj.isRemote){
+			if(!addedEnergyNet && euNetwork != null){
+				MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
+				addedEnergyNet = true;
+			}
 		}
 		//RF
 		
@@ -166,7 +187,7 @@ public class TileEntityReactorPowerTap extends TileEntityReactorPart implements 
 		return 4;
 	}
 
-	// IEnergyConnection
+	//IEnergyConnection
 	@Override
 	public boolean canConnectEnergy(ForgeDirection from) {
 		return from == getOutwardsDir();

@@ -107,17 +107,39 @@ public class TileEntityTurbinePowerTap extends TileEntityTurbinePartStandard imp
 		}
 	}
 
+	@Override
+	public void onChunkUnload() { //When chunk unload Tile remove from energy net.
+		if (!worldObj.isRemote){
+			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
+			addedEnergyNet = false;
+		}
+	}
+	
+	@Override
+	public void markDirty() { //I think this is not necessary, but just leave it here.
+		super.markDirty();
+		if (worldObj != null && !worldObj.isRemote) {
+			if (addedEnergyNet) {
+				EnergyTileUnloadEvent event = new EnergyTileUnloadEvent(this);
+				MinecraftForge.EVENT_BUS.post(event);
+			}
+			addedEnergyNet = false;
+			EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
+			MinecraftForge.EVENT_BUS.post(event);
+			addedEnergyNet = true;
+		}
+	}
+	
 	/** This will be called by the Reactor Controller when this tap should be providing power.
 	 * @return Power units remaining after consumption.
 	 */
 	public int onProvidePower(int units) {
 		//EU
-		if(euNetwork == null && addedEnergyNet) {
-			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
-			addedEnergyNet = false;
-		}else if(!addedEnergyNet){
-			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
-			addedEnergyNet = true;
+		if (!worldObj.isRemote){
+			if(!addedEnergyNet && euNetwork != null){
+				MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
+				addedEnergyNet = true;
+			}
 		}
 		//RF
 		
