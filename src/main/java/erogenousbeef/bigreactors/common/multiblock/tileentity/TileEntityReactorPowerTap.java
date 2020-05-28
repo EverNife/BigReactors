@@ -1,5 +1,7 @@
 package erogenousbeef.bigreactors.common.multiblock.tileentity;
 
+import java.math.BigDecimal;
+
 import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
@@ -72,35 +74,35 @@ public class TileEntityReactorPowerTap extends TileEntityReactorPart implements 
 	 * @param z
 	 */
 	protected void checkForConnections(IBlockAccess world, int x, int y, int z) {
-			boolean wasConnected = (euNetwork != null || rfNetwork != null);
-			ForgeDirection out = getOutwardsDir();
-			if(out == ForgeDirection.UNKNOWN) {
-				wasConnected = false;
-				euNetwork = null;
-				rfNetwork = null;
-				getReactorController().updateClient();
-			}
-			else {
-				// See if our adjacent non-reactor coordinate has a TE
-				getReactorController().updateClient();
-				euNetwork = null;
-				rfNetwork = null;
-				TileEntity te = world.getTileEntity(x + out.offsetX, y + out.offsetY, z + out.offsetZ);
-				if(!(te instanceof TileEntityReactorPowerTap)) {
-					// Skip power taps, as they implement these APIs and we don't want to shit energy back and forth
-					//EU
-					if(te instanceof IEnergyAcceptor) {
-						IEnergyAcceptor handler = (IEnergyAcceptor)te;
-						if(handler.acceptsEnergyFrom(this, out.getOpposite())) {
-							euNetwork = handler;
-						}
-					}
-					//RF
-					if(te instanceof IEnergyReceiver) {
-						rfNetwork = (IEnergyReceiver)te;	
+		boolean wasConnected = (euNetwork != null || rfNetwork != null);
+		ForgeDirection out = getOutwardsDir();
+		if(out == ForgeDirection.UNKNOWN) {
+			wasConnected = false;
+			euNetwork = null;
+			rfNetwork = null;
+			getReactorController().updateClient();
+		}
+		else {
+			// See if our adjacent non-reactor coordinate has a TE
+			getReactorController().updateClient();
+			euNetwork = null;
+			rfNetwork = null;
+			TileEntity te = world.getTileEntity(x + out.offsetX, y + out.offsetY, z + out.offsetZ);
+			if(!(te instanceof TileEntityReactorPowerTap)) {
+				// Skip power taps, as they implement these APIs and we don't want to shit energy back and forth
+				//EU
+				if(te instanceof IEnergyAcceptor) {
+					IEnergyAcceptor handler = (IEnergyAcceptor)te;
+					if(handler.acceptsEnergyFrom(this, out.getOpposite())) {
+						euNetwork = handler;
 					}
 				}
+				//RF
+				if(te instanceof IEnergyReceiver) {
+					rfNetwork = (IEnergyReceiver)te;	
+				}
 			}
+		}
 		boolean isConnected = (euNetwork != null || rfNetwork != null);
 		if(wasConnected != isConnected) {
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
@@ -150,7 +152,6 @@ public class TileEntityReactorPowerTap extends TileEntityReactorPart implements 
 		
 		ForgeDirection approachDirection = getOutwardsDir().getOpposite();
 		int energyConsumed = rfNetwork.receiveEnergy(approachDirection, (int)units / this.getReactorController().getAttachedPowerTapsCount(), false);
-		
 		return units;
 	}
 
@@ -174,9 +175,9 @@ public class TileEntityReactorPowerTap extends TileEntityReactorPart implements 
 
 	@Override
 	public double getOfferedEnergy() {
-		if(!this.isConnected())
+		if(!this.isConnected() || !this.getReactorController().isAssembled())
 			return 0;
-		return (this.getReactorController().getEnergyGeneratedLastTick() * BigReactors.RFtoEU) / this.getReactorController().getAttachedPowerTapsCount();
+		return BigDecimal.valueOf((this.getReactorController().getEnergyGeneratedLastTick() * BigReactors.RFtoEU) / this.getReactorController().getAttachedPowerTapsCount()).setScale(2,BigDecimal.ROUND_HALF_DOWN).doubleValue();
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package erogenousbeef.bigreactors.common.multiblock.tileentity;
 
+import java.math.BigDecimal;
+
 import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
@@ -173,11 +175,10 @@ public class TileEntityTurbinePowerTap extends TileEntityTurbinePartStandard imp
 
 	@Override
 	public double getOfferedEnergy() {
-		if(!this.isConnected())
+		if(!this.isConnected() || !this.getTurbine().isAssembled())
 			return 0;
-		return (this.getTurbine().getEnergyGeneratedLastTick() * BigReactors.RFtoEU) / this.getTurbine().getAttachedPowerTapsCount();
+		return BigDecimal.valueOf((this.getTurbine().getEnergyGeneratedLastTick() * BigReactors.RFtoEU) / this.getTurbine().getAttachedPowerTapsCount()).setScale(2,BigDecimal.ROUND_HALF_DOWN).doubleValue();
 	}
-
 	@Override
 	public void drawEnergy(double amount) {}
 

@@ -430,7 +430,7 @@ public class MultiblockReactor extends RectangularMultiblockControllerBase imple
 	 */
 	protected void generateEnergy(float newEnergy) {
 		newEnergy = newEnergy * BigReactors.powerProductionMultiplier * BigReactors.reactorPowerProductionMultiplier;
-		this.energyGeneratedLastTick += newEnergy;
+		this.energyGeneratedLastTick = newEnergy;
 		//this.addStoredEnergy(newEnergy);
 	}
 

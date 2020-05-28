@@ -909,7 +909,7 @@ public class MultiblockTurbine extends RectangularMultiblockControllerBase imple
 	 */
 	protected void generateEnergy(float newEnergy) {
 		newEnergy = newEnergy * BigReactors.powerProductionMultiplier * BigReactors.turbinePowerProductionMultiplier;
-		energyGeneratedLastTick = +newEnergy; //TODO: CHECK IT
+		energyGeneratedLastTick = newEnergy;
 	}
 	
 	// Activity state
