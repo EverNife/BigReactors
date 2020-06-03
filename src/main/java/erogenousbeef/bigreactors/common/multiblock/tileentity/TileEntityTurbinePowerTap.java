@@ -177,8 +177,8 @@ public class TileEntityTurbinePowerTap extends TileEntityTurbinePartStandard imp
 	public double getOfferedEnergy() {
 		if(!this.isConnected() || !this.getTurbine().isAssembled())
 			return 0;
-		return BigDecimal.valueOf((this.getTurbine().getEnergyGeneratedLastTick() * BigReactors.RFtoEU) / this.getTurbine().getAttachedPowerTapsCount()).setScale(2,BigDecimal.ROUND_HALF_DOWN).doubleValue();
-	}
+		return Math.round(((this.getTurbine().getEnergyGeneratedLastTick() * BigReactors.RFtoEU) / this.getTurbine().getAttachedPowerTapsCount())*100)/100;
+		}
 	@Override
 	public void drawEnergy(double amount) {}
 
