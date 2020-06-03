@@ -602,6 +602,7 @@ public class MultiblockTurbine extends RectangularMultiblockControllerBase imple
 		
 		if(attachedPowerTaps.size() > 0) {
 			for(TileEntityTurbinePowerTap powerTap : attachedPowerTaps) {
+				if(!powerTap.isConnected() || this.getAttachedPowerTapsCount() == 0) {continue;}
 				powerTap.onProvidePower((int) this.getEnergyGeneratedLastTick());
 			}
 		}

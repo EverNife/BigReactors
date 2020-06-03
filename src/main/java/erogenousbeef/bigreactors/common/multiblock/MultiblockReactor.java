@@ -388,7 +388,7 @@ public class MultiblockReactor extends RectangularMultiblockControllerBase imple
 		// Distribute available power
 		if(attachedPowerTaps.size() > 0) {
 			for(TileEntityReactorPowerTap powerTap : attachedPowerTaps) {
-				if(!powerTap.isConnected()) { continue; }
+				if(!powerTap.isConnected() || this.getAttachedPowerTapsCount() == 0) { continue; }
 				powerTap.onProvidePower((int) this.getEnergyGeneratedLastTick());
 			}
 		}
