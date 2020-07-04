@@ -157,6 +157,7 @@ public class BigReactors {
 	public static float powerProductionMultiplier = 1.0f;
 	public static float fuelUsageMultiplier = 1.0f;
 	public static double RFtoEU = 0.25;
+	public static boolean drawChunk = false;
 	
 	public static float reactorPowerProductionMultiplier = 1.0f;
 	public static float turbinePowerProductionMultiplier = 1.0f;
@@ -181,9 +182,7 @@ public class BigReactors {
 	/**
 	 * Call this function in your mod init stage.
 	 */
-	public static void register(Object modInstance)
-	{
-
+	public static void register(Object modInstance){
 		if (!INITIALIZED)
 		{
 
@@ -210,7 +209,7 @@ public class BigReactors {
 			boolean enableReactorPowerTapRecipe = BRConfig.CONFIGURATION.get("Recipes", "enableReactorPowerTapRecipe", true, "If set, reactor power taps can be crafted, allowing players to use passive-cooled reactors.").getBoolean(true);
 			boolean enableCyaniteFromYelloriumRecipe = BRConfig.CONFIGURATION.get("Recipes", "enableCyaniteFromYelloriumRecipe", true, "If set, cyanite will be craftable from yellorium ingots and sand.").getBoolean(true);
 
-			maximumReactorSize = BRConfig.CONFIGURATION.get("General", "maxReactorSize", 32, "The maximum valid size of a reactor in the X/Z plane, in blocks. Lower this if your server's players are building ginormous reactors.").getInt();
+			maximumReactorSize = BRConfig.CONFIGURATION.get("General", "maxReactorSize", 16, "The maximum valid size of a reactor in the X/Z plane, in blocks. Lower this if your server's players are building ginormous reactors.").getInt();
 			maximumReactorHeight = BRConfig.CONFIGURATION.get("General", "maxReactorHeight", 48, "The maximum valid size of a reactor in the Y dimension, in blocks. Lower this if your server's players are building ginormous reactors. Bigger Y sizes have far less performance impact than X/Z sizes.").getInt();
 			ticksPerRedstoneUpdate = BRConfig.CONFIGURATION.get("General", "ticksPerRedstoneUpdate", 20, "Number of ticks between updates for redstone/rednet ports.").getInt();
 			powerProductionMultiplier = (float)BRConfig.CONFIGURATION.get("General", "powerProductionMultiplier", 1.0f, "A multiplier for balancing overall power production from Big Reactors. Defaults to 1.").getDouble(1.0);
@@ -220,7 +219,7 @@ public class BigReactors {
 			turbinePowerProductionMultiplier = (float)BRConfig.CONFIGURATION.get("General", "turbinePowerProductionMultiplier", 1.0f, "A multiplier for balancing turbine power production. Stacks with powerProductionMultiplier. Defaults to 1.").getDouble(1.0);
 			
 			RFtoEU = BRConfig.CONFIGURATION.get("General", "RFtoEU", 0.25, "Coefficient of conversion of the RF into EU. Default 0.25, RF * RFtoEU = EU").getDouble(0.25);
-			
+						
 			maximumTurbineSize = BRConfig.CONFIGURATION.get("General",  "maxTurbineSize", 16, "The maximum valid size of a turbine in the X/Z plane, in blocks. Lower this for smaller turbines, which means lower max output.").getInt();
 			maximumTurbineHeight = BRConfig.CONFIGURATION.get("General",  "maxTurbineHeight", 32, "The maximum valid height of a turbine (Y axis), in blocks. (Default: 32)").getInt();
 			

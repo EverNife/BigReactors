@@ -9,8 +9,7 @@ import erogenousbeef.bigreactors.common.multiblock.interfaces.IMultiblockGuiHand
 public class BigReactorsGUIHandler implements IGuiHandler {
 
 	@Override
-	public Object getServerGuiElement(int ID, EntityPlayer player, World world,
-			int x, int y, int z) {
+	public Object getServerGuiElement(int ID, EntityPlayer player, World world,	int x, int y, int z) {
 		
 		TileEntity te = world.getTileEntity(x, y, z);
 		if(te == null) {
@@ -27,8 +26,7 @@ public class BigReactorsGUIHandler implements IGuiHandler {
 	}
 
 	@Override
-	public Object getClientGuiElement(int ID, EntityPlayer player, World world,
-			int x, int y, int z) {
+	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		TileEntity te = world.getTileEntity(x, y, z);
 		if(te == null) {
 			return null;

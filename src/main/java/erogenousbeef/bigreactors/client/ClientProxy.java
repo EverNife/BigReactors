@@ -2,8 +2,8 @@ package erogenousbeef.bigreactors.client;
 
 import java.util.Set;
 
-import net.minecraft.client.Minecraft;
-import net.minecraftforge.client.event.TextureStitchEvent;
+import org.lwjgl.input.Keyboard;
+
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
@@ -12,6 +12,8 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import erogenousbeef.bigreactors.api.registry.Keys;
+import erogenousbeef.bigreactors.client.renderer.ChunkRenderer;
 import erogenousbeef.bigreactors.client.renderer.RotorSimpleRenderer;
 import erogenousbeef.bigreactors.client.renderer.RotorSpecialRenderer;
 import erogenousbeef.bigreactors.client.renderer.SimpleRendererFuelRod;
@@ -25,6 +27,9 @@ import erogenousbeef.bigreactors.gui.BeefGuiIconManager;
 import erogenousbeef.core.multiblock.MultiblockClientTickHandler;
 import erogenousbeef.core.multiblock.MultiblockControllerBase;
 import erogenousbeef.core.multiblock.MultiblockRegistry;
+import net.minecraft.client.Minecraft;
+import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.common.MinecraftForge;
 
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
@@ -42,10 +47,11 @@ public class ClientProxy extends CommonProxy {
 	public void preInit() {}
 
 	@Override
-	public void init()
-	{
+	public void init(){
 		super.init();
-
+		Keys.addKey("chunkDrawing", "key.chunkDraw", Keyboard.KEY_F);
+		Keys.register();
+		MinecraftForge.EVENT_BUS.register(new ChunkRenderer());
 		FMLCommonHandler.instance().bus().register(new MultiblockClientTickHandler());
         FMLCommonHandler.instance().bus().register(new BRRenderTickHandler());
 

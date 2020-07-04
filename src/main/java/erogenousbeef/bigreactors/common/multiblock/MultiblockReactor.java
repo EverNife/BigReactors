@@ -71,7 +71,6 @@ public class MultiblockReactor extends RectangularMultiblockControllerBase imple
 	private float reactorHeat;
 	private float fuelHeat;
 	private WasteEjectionSetting wasteEjection;
-	//private float energyStored;
 	protected FuelContainer fuelContainer;
 	protected RadiationHelper radiationHelper;
 	protected CoolantContainer coolantContainer;
@@ -414,16 +413,6 @@ public class MultiblockReactor extends RectangularMultiblockControllerBase imple
 		return (oldHeat != this.getReactorHeat());
 	}
 	
-	/*public void setEnergyStored(float oldEnergy) {
-		energyStored = oldEnergy;
-		if(energyStored < 0.0 || Float.isNaN(energyStored)) {
-			energyStored = 0.0f;
-		}
-		else if(energyStored > maxEnergyStored) {
-			energyStored = maxEnergyStored;
-		}
-	}*/
-	
 	/**
 	 * Generate energy, internally. Will be multiplied by the BR Setting powerProductionMultiplier
 	 * @param newEnergy Base, unmultiplied energy to generate
@@ -431,35 +420,7 @@ public class MultiblockReactor extends RectangularMultiblockControllerBase imple
 	protected void generateEnergy(float newEnergy) {
 		newEnergy = newEnergy * BigReactors.powerProductionMultiplier * BigReactors.reactorPowerProductionMultiplier;
 		this.energyGeneratedLastTick = newEnergy;
-		//this.addStoredEnergy(newEnergy);
 	}
-
-	/**
-	 * Add some energy to the internal storage buffer.
-	 * Will not increase the buffer above the maximum or reduce it below 0.
-	 * @param newEnergy
-	 */
-	/*protected void addStoredEnergy(float newEnergy) {
-		if(Float.isNaN(newEnergy)) { return; }
-
-		energyStored += newEnergy;
-		if(energyStored > maxEnergyStored) {
-			energyStored = maxEnergyStored;
-		}
-		if(-0.00001f < energyStored && energyStored < 0.00001f) {
-			// Clamp to zero
-			energyStored = 0f;
-		}
-	}*/
-
-	/**
-	 * Remove some energy from the internal storage buffer.
-	 * Will not reduce the buffer below 0.
-	 * @param energy Amount by which the buffer should be reduced.
-	 */
-	/*protected void reduceStoredEnergy(float energy) {
-		this.addStoredEnergy(-1f * energy);
-	}*/
 	
 	public void setActive(boolean act) {
 		if(act == this.active) { return; }
@@ -967,12 +928,11 @@ public class MultiblockReactor extends RectangularMultiblockControllerBase imple
 			}
 		}
 
-		if(dumpAll)
-		{
+		if(dumpAll){
 			amtEjected += fuelContainer.getFuelAmount();
 			fuelContainer.setFuel(null);
 		}
-
+		
 		if(amtEjected > 0) {
 			markReferenceCoordForUpdate();
 			markReferenceCoordDirty();
@@ -1154,11 +1114,7 @@ public class MultiblockReactor extends RectangularMultiblockControllerBase imple
 	public String getWasteType() {
 		return fuelContainer.getWasteType();
 	}
-
-	/*public int getEnergyStoredPercentage() {
-		return (int)(this.energyStored / (float)this.maxEnergyStored * 100f);
-	}*/
-
+	
 	@Override
 	public int getCapacity() {
 		if(worldObj.isRemote && assemblyState != AssemblyState.Assembled) {
