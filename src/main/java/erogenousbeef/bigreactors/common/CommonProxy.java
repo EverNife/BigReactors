@@ -8,7 +8,6 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import cofh.api.modhelpers.ThermalExpansionHelper;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -31,19 +30,15 @@ public class CommonProxy {
 
 	public void init() {
 		BigReactors.registerTileEntities();
-		
+
 		CommonPacketHandler.init();
 
 		NetworkRegistry.INSTANCE.registerGuiHandler(BRLoader.instance, new BigReactorsGUIHandler());
 		BigReactors.tickHandler = new BigReactorsTickHandler();
 		FMLCommonHandler.instance().bus().register(BigReactors.tickHandler);
         FMLCommonHandler.instance().bus().register(new MultiblockServerTickHandler());
-		
-		sendInterModAPIMessages();
 
-		if(Loader.isModLoaded("VersionChecker")) {
-			FMLInterModComms.sendRuntimeMessage(BRLoader.MOD_ID, "VersionChecker", "addVersionCheck", "https://raw.githubusercontent.com/DannikInfo/BigReactors/master/version.json");
-		}
+		sendInterModAPIMessages();
 	}
 
 	private void sendInterModAPIMessages() {
@@ -51,16 +46,16 @@ public class CommonProxy {
 		ItemStack yelloriteOre 	= new ItemStack(BigReactors.blockYelloriteOre, 1);
 
 		final int YELLORIUM = 0;
-		
+
 		String[] names = ItemIngot.MATERIALS;
 		ItemStack[] ingots = new ItemStack[names.length];
 		ItemStack[] dusts = new ItemStack[names.length];
-		
+
 		for(int i = 0; i < names.length; i++) {
 			ingots[i] = ingotGeneric.getIngotItem(names[i]);
 			dusts[i] = ingotGeneric.getDustItem(names[i]);
 		}
-		
+
 		ItemStack doubledYelloriumDust = null;
 		if(dusts[YELLORIUM] != null) {
 			doubledYelloriumDust = dusts[YELLORIUM].copy();
@@ -97,20 +92,20 @@ public class CommonProxy {
 				ThermalExpansionHelper.addSmelterRecipe(200, doubleDust, sandStack, doubleIngot);
 			}
 		} // END: IsModLoaded - ThermalExpansion
-		
+
 		if(Loader.isModLoaded("MineFactoryReloaded")) {
 			// Add yellorite to yellow focus list.
 			IMCHelper.MFR.addOreToMiningLaserFocus(yelloriteOre, 2);
-            
+
             // Make Yellorite the 'preferred' ore for lime focus
             IMCHelper.MFR.setMiningLaserFocusPreferredOre(yelloriteOre, 9);
 		} // END: IsModLoaded - MineFactoryReloaded
-		
+
 		if(Loader.isModLoaded("appliedenergistics2")) {
 			if(doubledYelloriumDust != null) {
 				IMCHelper.AE2.addGrinderRecipe(yelloriteOre, doubledYelloriumDust, 4);
 			}
-		
+
 			for(int i = 0; i < ingots.length; i++) {
 				if(ingots[i] == null || dusts[i] == null) { continue; }
 				IMCHelper.AE2.addGrinderRecipe(ingots[i], dusts[i], 2);
@@ -130,33 +125,33 @@ public class CommonProxy {
 		}
 
 		BRConfig.CONFIGURATION.save();
-		
+
 		registerWithOtherMods();
-		
+
 		// Easter Egg - Check if today is valentine's day. If so, change all particles to hearts.
 		Calendar calendar = Calendar.getInstance();
 		BigReactors.isValentinesDay = (calendar.get(Calendar.MONTH) == 1 && calendar.get(Calendar.DAY_OF_MONTH) == 14);
 	}
-	
+
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
 	public void registerIcons(TextureStitchEvent.Pre event) {
 	}
-	
+
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
 	public void setIcons(TextureStitchEvent.Post event) {
 	}
-	
+
 	/// Mod Interoperability ///
 	void registerWithOtherMods() {
 		ModHelperBase modHelper;
-		
+
 		ModHelperBase.detectMods();
-		
+
 		modHelper = new ModHelperComputerCraft();
 		modHelper.register();
-		
+
 		modHelper = new ModHelperMekanism();
 		modHelper.register();
 	}

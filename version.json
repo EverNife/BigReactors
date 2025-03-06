@@ -1,7 +1,0 @@
-{"version":"0.5.4A","mcVersion":"1.7.10","updateURL":"https://github.com/DannikInfo/BigReactors/releases/download/0.5.4A/BigReactors-0.5.4A.jar","isDirectLink":true,"dependencies":{"minecraft":"1.7.10","forge":"10.13.4.1588","cofhcore":"3.1.4-329","IC2":"2.2.827"},"stable":true,"changeLog":[],"timestamp":1593874662,
-    "changelog":["A lot of bugs fixed.",
-    "Turbines can now be built in all directions, the height is now not always Y.",
-    "A major bug with chunks has been fixed, now you can’t build machine in several chunks",
-    "limitation on the maximum size of the machine: 16 to 16 (the size of one chunk)",
-    "For convenience, the display of the chunk is added, in order to turn on, press F",
-    "A few other inconspicuous fixes that I may not remember about"]}
